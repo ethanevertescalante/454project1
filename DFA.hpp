@@ -1,0 +1,36 @@
+//
+// Created by Ethan Escalante on 10/11/25.
+//
+
+#include <vector>
+#include <string>
+#include "gmpxx.h"
+using namespace std;
+
+#ifndef CS454PROJECT1_DFA_HPP
+#define CS454PROJECT1_DFA_HPP
+
+
+class DFA{
+public:
+    DFA();
+    void buildDfaL();
+    bool areAllFourCharsInSubString(vector<int>& subString);
+    mpz_class countAcceptedStrings(DFA& dfa, int n);
+    int& getNextState(int state, int symbol);
+
+private:
+    int numStates = 0;
+    int sigma = 0; //the alphabet in the language
+    int startState = 0;
+    vector<int> accept; // 0 == reject, 1 == accept
+    vector<int> transitions;
+
+
+
+
+
+};
+
+
+#endif //CS454PROJECT1_DFA_HPP
