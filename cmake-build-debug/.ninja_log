@@ -1,0 +1,5 @@
+# ninja log v6
+1	456	1760325618199318033	CMakeFiles/cs454project1.dir/Buffer.cpp.o	81c894d6dae328b6
+1	539	1760325618199474324	CMakeFiles/cs454project1.dir/DFA.cpp.o	f39d816c260dab44
+0	567	1760325618198984242	CMakeFiles/cs454project1.dir/main.cpp.o	96ea56317bc527f9
+567	604	1760325618765548554	cs454project1	2ad1ec4812b7f4c8
