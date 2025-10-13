@@ -13,11 +13,14 @@ using namespace std;
 
 class DFA{
 public:
-    DFA();
     void buildDfaL();
     bool areAllFourCharsInSubString(vector<int>& subString);
     mpz_class countAcceptedStrings(DFA& dfa, int n);
     int& getNextState(int state, int symbol);
+    int& getNextStateOfAA(DFA& M, int state, int symbolA);
+    int getNumStates(){
+        return numStates;
+    }
 
 private:
     int numStates = 0;

@@ -1,10 +1,14 @@
 #include "DFA.hpp"
 #include "Buffer.hpp"
 
-DFA::DFA() { buildDfaL(); }
-
 int& DFA::getNextState(int state, int symbol){
     return transitions[state * sigma + symbol];
+}
+
+int& DFA::getNextStateOfAA(DFA &M, int state, int symbolA) {
+    //go to the first 'a', then go to the subsequent 'a' ('aa')
+    int stateA = M.getNextState(state, symbolA);
+    return M.getNextState(stateA, symbolA);
 }
 
 bool DFA::areAllFourCharsInSubString(vector<int>& subString){
@@ -67,6 +71,7 @@ void DFA::buildDfaL(){
     }
 }
 
+
 mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
     if(n < 0) return 0; //just in case (even though the input on main is also protected)
 
@@ -90,3 +95,4 @@ mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
     return prev[dfa.startState];
 
 }
+
