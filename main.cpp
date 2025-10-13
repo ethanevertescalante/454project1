@@ -8,7 +8,7 @@ int main() {
     while(true){
         std::cout <<  "Choose from the selection of options:\n"
                       "1. Count strings of length n in language L\n"
-                      "2. Count string of length 2m in language L' with middle of \"aa\"\n"
+                      "2. Count string of length n in language L' with middle of \"aa\"\n"
                       "3. Quit\n"
                       "Enter Choice: ";
 
