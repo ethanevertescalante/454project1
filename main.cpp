@@ -7,8 +7,9 @@ int main() {
     DFA dfaL;
     dfaL = dfaL.buildDfaL();
 
-    DFA dfaLDoublePrime;
-    dfaLDoublePrime.buildDfaL();
+//    TODO::DELETE
+//    DFA dfaLDoublePrime;
+//    dfaLDoublePrime.buildDfaL();
 
     while(true){
         std::cout <<  "Choose from the selection of options:\n"
@@ -22,7 +23,6 @@ int main() {
 
         if(choice == 1 || choice == 2){
             int n;
-            cout << "Number of States in L: " << dfaL.getNumStates() << "\n";
             cout << "Enter n from 1 to 300: ";
             cin >> n;
             if(n < 1 || n > 300){
@@ -31,19 +31,16 @@ int main() {
             }
 
             if(choice == 1){
+                cout << "Number of States in L: " << dfaL.getNumStates() << "\n";
                 mpz_class answer = dfaL.countAcceptedStrings(dfaL, n);
-                cout << "\nUsing language \"L\" and with n = " << n << " there are " << answer << " strings w of length n that satisfy rule #1" << "\n\n";
+                cout << "\nUsing language \"L\" and with n = " << n << " there are " << answer << " strings w of length " << n << " that satisfy rule #1" << "\n\n";
             }else{
+                //EXPLANATION
                 //so we have to count the string in the form  < first + "aa" + second >
-
                 //must be even and must contain "aa" string in the middle
                         //ex) acdbaaacdb where first = acdb, "aa", and second = acdb
-
                 //we will have to count the string in pairs:
                         //ex) (a,c),(d,b) (a,a) (a,c),(d,b)
-
-                cout << "\nunder construction...\n\n";
-
                 int start = 0;
                 mpz_class total = 0;
 
@@ -55,16 +52,13 @@ int main() {
                         cout << "Number of States in L'': " << Mp.getNumStates() << "\n";
                     }
 
-                    cout << "\nstill working... (hang in there!)\n\n\n";
+                    cout << "\nstill working, currently on state " << p << "... (hang in there!)\n\n\n";
 
                 }
 
-
-                cout << "\nUsing language L' (middle \"aa\") with total length " << (2 * n)
-                     << ", there are " << total << " strings.\n\n";
-
+                cout << "\nUsing language L'' (middle \"aa\") with total length " << (2 * n)
+                     << ", there are " << total << " strings w of length " << n << " that satisfy rule #2.\n\n";
             }
-
         }else if(choice == 3){
             cout << "Exiting Execution...";
             break;

@@ -10,6 +10,7 @@ using namespace std;
 #ifndef CS454PROJECT1_DFA_HPP
 #define CS454PROJECT1_DFA_HPP
 
+#include <iostream>
 
 class DFA{
 public:

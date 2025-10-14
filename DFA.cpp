@@ -76,6 +76,9 @@ DFA DFA::buildDfaL(){
 }
 
 DFA DFA::buildMp(DFA &L, int state, int symbolA) {
+    //I could get rid of the DFA parameter here since the instance of the object I created is still available via <this>
+    //std::cout << this->numStates << "\n";
+    //std::cout << this->sigma;
     DFA Mp;
     int originalNumStates= L.numStates;
     int originalSigma = L.sigma;
