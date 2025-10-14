@@ -1,14 +1,14 @@
 #include "DFA.hpp"
 #include "Buffer.hpp"
 
-int& DFA::getNextState(int state, int symbol){
+int& DFA::getNextState(DFA& dfa,int state, int symbol){
     return transitions[state * sigma + symbol];
 }
 
-int& DFA::getNextStateOfAA(DFA &M, int state, int symbolA) {
+int& DFA::getNextStateOfAA(DFA& M, int state, int symbolA) {
     //go to the first 'a', then go to the subsequent 'a' ('aa')
-    int stateA = M.getNextState(state, symbolA);
-    return M.getNextState(stateA, symbolA);
+    int stateA = M.getNextState(M, state, symbolA);
+    return M.getNextState(M,stateA, symbolA);
 }
 
 bool DFA::areAllFourCharsInSubString(vector<int>& subString){
@@ -19,8 +19,9 @@ bool DFA::areAllFourCharsInSubString(vector<int>& subString){
     return seenChars[0] && seenChars[1] && seenChars[2] && seenChars[3];
 }
 
-void DFA::buildDfaL(){
+DFA DFA::buildDfaL(){
     //this is the constructor, just in a separate method
+
     const int SIGMA = 4; //number of chars in the language
 
     BufferIndex bufferIndex = makeBufferIndex();
@@ -45,7 +46,7 @@ void DFA::buildDfaL(){
                     newBuffer.push_back(k);
                     int j2 = encodeBase4(newBuffer);
                     int s2 = bufferIndex.offset[i+1] + j2;
-                    getNextState(s,k) = s2;
+                    getNextState(*this,s,k) = s2;
                 } else { // forming length 6 substring
                     vector<int> subString(6);
                     for (int l = 0; l < 5; ++l) subString[l] = buffer[l];
@@ -54,14 +55,14 @@ void DFA::buildDfaL(){
 
                     if (!areAllFourCharsInSubString(subString)) {
                         //fails forever and never comes back
-                        getNextState(s, k) = bufferIndex.failId;
+                        getNextState(*this,s, k) = bufferIndex.failId;
                     } else {
                         // rule check passes (all 4 chars are in the substring)
                         // keep last 5 symbols as the new buffer slides to next state
                         std::vector<int> newBuffer = { subString[1], subString[2], subString[3], subString[4], subString[5] };
                         int j2 = encodeBase4(newBuffer);
                         int s2 = bufferIndex.offset[5] + j2;
-                        getNextState(s, k) = s2;
+                        getNextState(*this, s, k) = s2;
                     }
                 }
 
@@ -69,8 +70,44 @@ void DFA::buildDfaL(){
 
         }
     }
+
+    return *this;
+
 }
 
+DFA DFA::buildMp(DFA &L, int state, int symbolA) {
+    DFA Mp;
+    int originalNumStates= L.numStates;
+    int originalSigma = L.sigma;
+
+    Mp.numStates = originalNumStates * originalNumStates;
+    Mp.sigma = originalSigma * originalSigma;
+    Mp.startState = getNextStateOfAA(L, state, symbolA);
+
+    Mp.accept.assign(Mp.numStates, 0); //initialize to false
+    for(int i = 0; i < originalNumStates; i++){
+        if(L.accept[i]){
+            Mp.accept[state * originalNumStates + i] = 1; // setting accepting states
+        }
+    }
+
+    Mp.transitions.assign(Mp.numStates * Mp.sigma, 0);
+    for(int j = 0; j < originalNumStates; j++){
+        for(int k = 0; k < originalNumStates; k++){
+            int s = j * originalNumStates + k;
+            for(int l = 0; l < originalSigma; l++){
+                for(int z = 0; z < originalSigma; z++){
+                    int t1 = getNextState(L,j, l);
+                    int t2 = getNextState(L,k, z);
+                    int symbol = l * originalSigma + z;
+                    Mp.transitions[s * Mp.sigma + symbol] = t1 * originalNumStates + t2;
+                }
+            }
+        }
+    }
+
+    return Mp;
+}
 
 mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
     if(n < 0) return 0; //just in case (even though the input on main is also protected)
@@ -85,7 +122,7 @@ mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
         for (int k = 0; k < dfa.numStates; k++) {
             mpz_class sum = 0;
             for (int l = 0; l < dfa.sigma; l++) {
-                int t = dfa.getNextState(j, l);
+                int t = dfa.getNextState(dfa, j, l);
                 sum += prev[t];
             }
             next[k] = sum;

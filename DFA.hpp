@@ -13,10 +13,11 @@ using namespace std;
 
 class DFA{
 public:
-    void buildDfaL();
+    DFA buildDfaL();
+    DFA buildMp(DFA& L, int state, int symbolA);
     bool areAllFourCharsInSubString(vector<int>& subString);
     mpz_class countAcceptedStrings(DFA& dfa, int n);
-    int& getNextState(int state, int symbol);
+    int& getNextState(DFA& dfa,int state, int symbol);
     int& getNextStateOfAA(DFA& M, int state, int symbolA);
     int getNumStates(){
         return numStates;

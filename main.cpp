@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     DFA dfaL;
-    dfaL.buildDfaL();
+    dfaL = dfaL.buildDfaL();
 
     DFA dfaLDoublePrime;
     dfaLDoublePrime.buildDfaL();
@@ -43,6 +43,26 @@ int main() {
                         //ex) (a,c),(d,b) (a,a) (a,c),(d,b)
 
                 cout << "\nunder construction...\n\n";
+
+                int start = 0;
+                mpz_class total = 0;
+
+                for(int p  = 0; p < dfaL.getNumStates(); p++){
+                    DFA Mp = dfaL.buildMp(dfaL, p, start);
+                    total += dfaL.countAcceptedStrings(Mp, n - 1);
+
+                    if(p == dfaL.getNumStates() - 1){
+                        cout << "Number of States in L'': " << Mp.getNumStates() << "\n";
+                    }
+
+                    cout << "\nstill working... (hang in there!)\n\n\n";
+
+                }
+
+
+                cout << "\nUsing language L' (middle \"aa\") with total length " << (2 * n)
+                     << ", there are " << total << " strings.\n\n";
+
             }
 
         }else if(choice == 3){
