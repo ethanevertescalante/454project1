@@ -25,10 +25,7 @@ int main() {
             int n;
             cout << "Enter n from 1 to 300: ";
             cin >> n;
-            if(n < 1 || n > 300){
-                cout << "n is out of range, please choose a value between 1 and 300\n";
-                continue;
-            }
+
 
             if(choice == 1){
                 cout << "Number of States in L: " << dfaL.getNumStates() << "\n";
@@ -63,7 +60,7 @@ int main() {
             cout << "Exiting Execution...";
             break;
         }else{
-            cout << "Invalid Choice. Please input a number from 1 to 3.";
+            cout << "Invalid Choice. Please input a number from 1 to 3.\n";
         }
     }
     return 0;
