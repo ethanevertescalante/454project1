@@ -85,7 +85,10 @@ DFA DFA::buildMp(DFA &L, int state, int symbolA) {
 
     Mp.numStates = originalNumStates * originalNumStates;
     Mp.sigma = originalSigma * originalSigma;
-    Mp.startState = getNextStateOfAA(L, state, symbolA);
+    int q = getNextStateOfAA(L, state, symbolA);
+    Mp.startState = 0 * originalNumStates + q;   // (0, q)
+
+//    Mp.startState = getNextStateOfAA(L, state, symbolA);
 
     Mp.accept.assign(Mp.numStates, 0); //initialize to false
     for(int i = 0; i < originalNumStates; i++){
@@ -125,7 +128,7 @@ mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
         for (int k = 0; k < dfa.numStates; k++) {
             mpz_class sum = 0;
             for (int l = 0; l < dfa.sigma; l++) {
-                int t = dfa.getNextState(dfa, j, l);
+                int t = dfa.getNextState(dfa, k, l);
                 sum += prev[t];
             }
             next[k] = sum;
@@ -134,5 +137,49 @@ mpz_class DFA::countAcceptedStrings(DFA& dfa, int n){
     }
     return prev[dfa.startState];
 
+}
+
+mpz_class DFA::countEvenWithMiddleAA_fast(DFA& M, int n, int symbolA) {
+    if (n % 2 != 0 || n < 2) return 0;
+    int m = n / 2, len = m - 1;
+
+    // f: paths of length len from start to s
+    std::vector<mpz_class> f(M.numStates), fnext(M.numStates);
+    f.assign(M.numStates, 0);
+    f[M.startState] = 1;
+    for (int t = 0; t < len; ++t) {
+        std::fill(fnext.begin(), fnext.end(), 0);
+        for (int s = 0; s < M.numStates; ++s) if (f[s] != 0) {
+                for (int x = 0; x < M.sigma; ++x) {
+                    int v = M.getNextState(M, s, x);
+                    fnext[v] += f[s];
+                }
+            }
+        f.swap(fnext);
+    }
+
+    // g: paths of length len from s to any accept
+    std::vector<mpz_class> g(M.numStates), gnext(M.numStates);
+    for (int s = 0; s < M.numStates; ++s) g[s] = M.accept[s] ? 1 : 0;
+    for (int t = 0; t < len; ++t) {
+        std::fill(gnext.begin(), gnext.end(), 0);
+        for (int s = 0; s < M.numStates; ++s) {
+            mpz_class sum = 0;
+            for (int x = 0; x < M.sigma; ++x) {
+                int v = M.getNextState(M, s, x);
+                sum += g[v];
+            }
+            gnext[s] = sum;
+        }
+        g.swap(gnext);
+    }
+
+    // combine
+    mpz_class ans = 0;
+    for (int p = 0; p < M.numStates; ++p) if (f[p] != 0) {
+            int q = M.getNextState(M, M.getNextState(M, p, symbolA), symbolA);
+            ans += f[p] * g[q];
+        }
+    return ans;
 }
 

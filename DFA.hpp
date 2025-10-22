@@ -23,6 +23,11 @@ public:
     int getNumStates(){
         return numStates;
     }
+    int getAccepting(int i){
+        return accept[i];
+    }
+    mpz_class countEvenWithMiddleAA_fast(DFA& M, int n, int symbolA);
+
 
 private:
     int numStates = 0;
