@@ -10,14 +10,24 @@ using namespace std;
 #ifndef CS454PROJECT1_DFA_HPP
 #define CS454PROJECT1_DFA_HPP
 
+#include <iostream>
 
 class DFA{
 public:
-    DFA();
-    void buildDfaL();
+    DFA buildDfaL();
+    DFA buildMp(DFA& L, int state, int symbolA);
     bool areAllFourCharsInSubString(vector<int>& subString);
     mpz_class countAcceptedStrings(DFA& dfa, int n);
-    int& getNextState(int state, int symbol);
+    int& getNextState(DFA& dfa,int state, int symbol);
+    int& getNextStateOfAA(DFA& M, int state, int symbolA);
+    int getNumStates(){
+        return numStates;
+    }
+    int getAccepting(int i){
+        return accept[i];
+    }
+    mpz_class countEvenWithMiddleAA_fast(DFA& M, int n, int symbolA);
+
 
 private:
     int numStates = 0;
